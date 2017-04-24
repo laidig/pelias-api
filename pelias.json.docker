@@ -7,13 +7,13 @@
       {
         "env": "production",
         "protocol": "http",
-        "host": "pelias-data-container",
+        "host": "localhost",
         "port": 9200
       },
       {
         "env": "production",
         "protocol": "http",
-        "host": "pelias-data-container",
+        "host": "localhost",
         "port": 9300
       }
     ]

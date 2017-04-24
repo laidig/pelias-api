@@ -7,7 +7,7 @@ EXPOSE ${PORT}
 # install libpostal
 RUN apt-get update
 RUN echo 'APT::Acquire::Retries "20";' >> /etc/apt/apt.conf
-RUN apt-get install -y --no-install-recommends git curl libsnappy-dev autoconf automake libtool pkg-config
+RUN apt-get install -y --no-install-recommends git curl libsnappy-dev autoconf automake libtool pkg-config build-essential
 
 RUN mkdir -p /mnt/data/libpostal
 
@@ -19,12 +19,15 @@ RUN git clone https://github.com/openvenues/libpostal \
   && make install \
   && ldconfig
 
+RUN npm install -gq node-gyp
+RUN npm install -gq openvenues/node-postal
+
 # use our extended query module until it gets merged upstream
 ENV QUERY=/opt/pelias/query
 WORKDIR ${QUERY}
 RUN git clone --single-branch https://github.com/HSLdevcom/query.git \
   && cd query \
-  && npm install \
+  && npm install -q \
   && npm link
 
 # Where the app is built and run inside the docker fs
@@ -37,7 +40,7 @@ WORKDIR ${WORK}
 ADD . ${WORK}
 
 # Build and set permissions for arbitrary non-root user
-RUN npm install \
+RUN npm install -q\
   && npm link pelias-query \
   && npm test \
   && chmod -R a+rwX .
